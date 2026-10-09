@@ -1,3 +1,7 @@
+Opis wymagań bieznesowych:
+Platforma Kursów Online to system edukacyjny umożliwiający tworzenie kursów oraz uczestniczenie w nich za pośrednictwem internetu. Wykładowcy mogą tworzyć kursy składające się z uporządkowanych modułów i lekcji, natomiast kursanci mogą przeglądać dostępne kursy i zapisywać się na wybrane. System monitoruje postępy kursantów, wyświetlając procent ukończenia danego kursu. Kolejne moduły są odblokowywane dopiero po ukończeniu poprzednich, co zapewnia realizację materiału w ustalonej kolejności. Po ukończeniu wszystkich modułów system automatycznie generuje certyfikat zawierający dane kursanta, nazwę kursu oraz datę jego wydania.
+
+
 User Stories:
 1.
 Jako Wykładowca
