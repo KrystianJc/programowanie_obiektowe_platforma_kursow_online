@@ -1,0 +1,12 @@
+# CLion build folders
+cmake-build-*/
+
+# CLion settings (personal, differ per computer)
+.idea/
+
+# VS Code settings (if your partner uses it)
+.vscode/
+
+# Compiled files
+*.exe
+*.o
