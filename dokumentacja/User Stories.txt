@@ -1,0 +1,31 @@
+User Stories:
+1.
+Jako Wykładowca
+chcę utworzyć kurs i dodać do niego moduły z lekcjami,
+aby kursanci mieli dostęp do materiałów.
+Kryterium akceptacji: Po utworzeniu kursu i dodaniu modułów kurs jest widoczny na liście kursów, a moduły wyświetlają się w ustalonej kolejności.
+2.
+Jako kursant
+chcę przeglądać listę dostępnych kursów,
+aby wybrać kurs.
+Kryterium akceptacji: System wyświetla listę wszystkich kursów z tytułem i nazwiskiem wykładowcy.
+3.
+Jako kursant
+chcę zapisać się na wybrany kurs,
+aby uzyskać dostęp do jego materiałów.
+Kryterium akceptacji: Po zapisaniu się tworzy się nowy obiekt Postep, a kursant ma dostęp do pierwszego modułu kursu.
+4.
+Jako kursant
+chcę widzieć swój postęp w kursie,
+aby wiedzieć, ile zostało mi do końca.
+Kryterium akceptacji: Po ukończeniu modułu procent ukończenia kursu rośnie.
+5.
+Jako wykładowca
+chcę, aby kolejny moduł był dostępny dopiero po ukończeniu poprzedniego,
+aby kursanci przechodzili materiał w ustalonej kolejności.
+Kryterium akceptacji: Kursant, który ukończył tylko moduł 1, nie może otworzyć modułu 3. Po ukończeniu modułu 2 moduł 3 się odblokowuje.
+6.
+Jako kursant
+chcę otrzymać certyfikat po ukończeniu wszystkich modułów kursu,
+aby mieć potwierdzenie ukończenia kursu.
+Kryterium akceptacji: Gdy postęp wynosi 100%, system generuje certyfikat z imieniem i nazwiskiem kursanta, nazwą kursu i datą wydania. Przy postępie poniżej 100% certyfikat nie jest dostępny.
