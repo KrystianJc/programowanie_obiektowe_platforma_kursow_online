@@ -11,4 +11,5 @@ add_executable(programowanie_obiektowe_platforma_kursow_online
         Uzytkownicy/kursant.h
         Uzytkownicy/wykladowca.cpp
         Uzytkownicy/wykladowca.h
-        platforma_edukacyjna.h)
+        platforma_edukacyjna.h
+        platforma_edukacyjna.cpp)
