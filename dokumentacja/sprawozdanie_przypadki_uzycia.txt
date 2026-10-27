@@ -1,0 +1,81 @@
+Przypadki użycia:
+
+1. Utwórz kurs
+
+Aktor: Wykładowca
+Opis: Wykładowca tworzy nowy kurs, podając jego tytuł.
+Powiązanie: US1, metoda utworzKurs()
+
+2. Dodaj moduł
+
+Aktor: Wykładowca
+Opis: Wykładowca dodaje do kursu moduł z ustaloną kolejnością.
+Powiązanie: US1, metoda dodajModul()
+
+3. Dodaj lekcję
+
+Aktor: Wykładowca
+Opis: Wykładowca dodaje lekcję do wybranego modułu.
+Powiązanie: US1, metoda dodajLekcje()
+
+4. Dodaj kurs
+
+Aktor: Wykładowca
+Opis: Wykładowca dodaje gotowy kurs do platformy, dzięki czemu kurs pojawia się na liście dostępnych kursów.
+Powiązanie: US1, metoda dodajKurs()
+
+5. Przeglądaj kursy
+
+Aktor: Kursant
+Opis: Kursant wyświetla listę dostępnych kursów z tytułem i nazwiskiem wykładowcy.
+Powiązanie: US2, metoda pokazKursy()
+
+6. Zapisz się na kurs
+
+Aktor: Kursant
+Opis: Kursant zapisuje się na wybrany kurs, a system tworzy dla niego nowy postęp.
+Powiązanie: US3, metoda zapiszSie()
+
+7. Ukończ moduł
+
+Aktor: Kursant
+Opis: Kursant kończy kolejny moduł kursu, a system zwiększa liczbę ukończonych modułów.
+Relacja: <<include>> Sprawdź dostępność modułu
+Powiązanie: US4, metoda ukonczModul()
+
+8. Sprawdź postęp
+
+Aktor: Kursant
+Opis: Kursant sprawdza procent ukończenia kursu.
+Powiązanie: US4, metoda procentUkonczenia()
+
+9. Sprawdź dostępność modułu
+
+Aktor: brak (uruchamiany przez „Ukończ moduł”)
+Opis: System sprawdza, czy poprzedni moduł jest ukończony. Jeśli nie, moduł pozostaje zablokowany.
+Powiązanie: US5, metoda czyOdblokowany()
+
+10. Wygeneruj certyfikat
+
+Aktor: brak (rozszerza „Ukończ moduł”)
+Opis: Gdy kursant ukończy ostatni moduł, system generuje certyfikat z imieniem i nazwiskiem kursanta, nazwą kursu i datą.
+Relacja: <<extend>> Ukończ moduł
+Powiązanie: US6, metody czyUkonczony() i wygenerujCertyfikat()
+
+Diagram sekwencji – Wygeneruj certyfikat
+
+1. Powiązany przypadek użycia:
+Nazwa: Wygeneruj certyfikat (rozszerza przypadek „Ukończ moduł”).
+Aktor: Kursant.
+
+2. Cel operacji:
+Diagram przedstawia scenariusz, w którym kursant kończy moduł kursu, a następnie prosi o certyfikat. Platforma sprawdza, czy kurs został ukończony, i w zależności od wyniku wypisuje certyfikat albo komunikat o jego braku.
+
+3. Przebieg interakcji (krok po kroku):
+
+1. Ukończenie modułu: Kursant wywołuje metodę ukonczModul() na obiekcie :Postep. Liczba ukończonych modułów zwiększa się o 1. Metoda zwraca void, więc nie ma komunikatu zwrotnego.
+2. Żądanie certyfikatu: Kursant wywołuje metodę wygenerujCertyfikat(k: Kursant, p: Postep) na obiekcie :PlatformaEdukacyjna, przekazując siebie oraz swój postęp w kursie.
+3. Weryfikacja ukończenia: Platforma wywołuje metodę czyUkonczony() na obiekcie :Postep.
+4. Odpowiedź: Obiekt :Postep zwraca do platformy wartość ukonczony : bool.
+5. Fragment alt [ukonczony == true]: Kurs jest ukończony, więc platforma wypisuje certyfikat z imieniem i nazwiskiem kursanta, tytułem kursu oraz datą wydania.
+6. Fragment alt [else]: Kurs nie jest ukończony, więc platforma wypisuje komunikat, że certyfikat jest niedostępny.
