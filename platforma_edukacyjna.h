@@ -1,9 +1,3 @@
-//
-// Created by pc on 20.10.2026.
-//
-
-#ifndef PROGRAMOWANIE_OBIEKTOWE_PLATFORMA_KURSOW_ONLINE_PLATFORMA_EDUKACYJNA_H
-#define PROGRAMOWANIE_OBIEKTOWE_PLATFORMA_KURSOW_ONLINE_PLATFORMA_EDUKACYJNA_H
 #pragma once
 
 #include <memory>
@@ -26,4 +20,3 @@ private:
     vector<Kurs> kursy_;
     vector<unique_ptr<Uzytkownik>> uzytkownicy_;
 };
-#endif //PROGRAMOWANIE_OBIEKTOWE_PLATFORMA_KURSOW_ONLINE_PLATFORMA_EDUKACYJNA_H
