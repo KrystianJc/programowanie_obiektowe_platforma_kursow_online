@@ -2,6 +2,7 @@
 #include "platforma_edukacyjna.h"
 #include "Uzytkownicy/kursant.h"
 #include "Uzytkownicy/wykladowca.h"
+#include "Uzytkownicy/uzytkownik.h"
 using namespace std;
 
 void wyswietlUzytkownika(const Uzytkownik& u) {

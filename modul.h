@@ -1,5 +1,3 @@
-#ifndef PROGRAMOWANIE_OBIEKTOWE_PLATFORMA_KURSOW_ONLINE_MODUL_H
-#define PROGRAMOWANIE_OBIEKTOWE_PLATFORMA_KURSOW_ONLINE_MODUL_H
 #pragma once
 
 #include <string>
@@ -23,4 +21,3 @@ private:
     int kolejnosc_;
     vector<Lekcja> lekcje_;
 };
-#endif //PROGRAMOWANIE_OBIEKTOWE_PLATFORMA_KURSOW_ONLINE_MODUL_H

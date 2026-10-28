@@ -1,5 +1,3 @@
-#ifndef PROGRAMOWANIE_OBIEKTOWE_PLATFORMA_KURSOW_ONLINE_KURS_H
-#define PROGRAMOWANIE_OBIEKTOWE_PLATFORMA_KURSOW_ONLINE_KURS_H
 #pragma once
 
 #include <string>
@@ -23,6 +21,3 @@ private:
     vector<Modul> moduly_;
     string nazwiskoWykladowcy_;
 };
-
-
-#endif //PROGRAMOWANIE_OBIEKTOWE_PLATFORMA_KURSOW_ONLINE_KURS_H
