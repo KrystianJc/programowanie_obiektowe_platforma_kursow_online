@@ -1,5 +1,3 @@
-#pragma once
-
 #include "platforma_edukacyjna.h"
 
 #include <ctime>

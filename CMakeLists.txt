@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 4.3)
 project(programowanie_obiektowe_platforma_kursow_online)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 add_executable(programowanie_obiektowe_platforma_kursow_online
         main.cpp
@@ -12,4 +12,12 @@ add_executable(programowanie_obiektowe_platforma_kursow_online
         Uzytkownicy/wykladowca.cpp
         Uzytkownicy/wykladowca.h
         platforma_edukacyjna.h
-        platforma_edukacyjna.cpp)
+        platforma_edukacyjna.cpp
+        kurs.cpp
+        kurs.h
+        modul.cpp
+        modul.h
+        lekcja.cpp
+        lekcja.h
+        postep.cpp
+        postep.h)
