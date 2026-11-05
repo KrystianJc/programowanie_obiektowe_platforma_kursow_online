@@ -15,6 +15,7 @@ public:
 
     void zapiszSie(const Kurs& kurs);
     Postep& getPostep(int indeks);
+    int getLiczbaPostepow() const;
     string getRola() const override;
 
 private:

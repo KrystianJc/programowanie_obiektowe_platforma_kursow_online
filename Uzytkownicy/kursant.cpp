@@ -11,6 +11,10 @@ Postep& Kursant::getPostep(int indeks) {
     return postepy_.at(indeks);
 }
 
+int Kursant::getLiczbaPostepow() const {
+    return static_cast<int>(postepy_.size());
+}
+
 string Kursant::getRola() const {
     return "Kursant";
 }
