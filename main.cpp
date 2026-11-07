@@ -38,6 +38,13 @@ string wczytajTekst(const string& komunikat) {
     return tekst;
 }
 
+bool czekajNaEnter() {
+    cout << "[Enter - dalej, 0 - powrot] ";
+    string linia;
+    getline(cin, linia);
+    return linia != "0";
+}
+
 void wyswietlKursy(const PlatformaEdukacyjna& platforma) {
     vector<Kurs> kursy = platforma.pokazKursy();
 
@@ -68,9 +75,17 @@ void wyswietlSzczegolyKursu(const Kurs& kurs) {
 
 void utworzKurs(PlatformaEdukacyjna& platforma,
                 const Wykladowca& wykladowca) {
-    string tytul = wczytajTekst("Podaj tytul kursu: ");
+    string tytul = wczytajTekst("Podaj tytul kursu (0 - powrot): ");
+    if (tytul == "0") {
+        return;
+    }
     Kurs kurs = wykladowca.utworzKurs(tytul);
-    int liczbaModulow = wczytajLiczbe("Ile modulow ma miec kurs? ", 1, 20);
+    int liczbaModulow = wczytajLiczbe(
+        "Ile modulow ma miec kurs? (0 - powrot) ", 0, 20);
+    if (liczbaModulow == 0) {
+        cout << "Anulowano tworzenie kursu.\n";
+        return;
+    }
 
     for (int numerModulu = 1; numerModulu <= liczbaModulow; ++numerModulu) {
         string tytulModulu = wczytajTekst(
@@ -105,7 +120,38 @@ int wybierzPostep(Kursant& kursant) {
              << " (" << postep.procentUkonczenia() << "%)\n";
     }
 
-    return wczytajLiczbe("Wybierz kurs: ", 1, kursant.getLiczbaPostepow()) - 1;
+    cout << "0. Powrot\n";
+
+    return wczytajLiczbe("Wybierz kurs: ", 0, kursant.getLiczbaPostepow()) - 1;
+}
+
+void przejdzKolejnyModul(Postep& postep) {
+    if (postep.czyUkonczony()) {
+        cout << "Wszystkie moduly tego kursu sa juz ukonczone.\n";
+        return;
+    }
+
+    int numer = postep.getUkonczoneModuly() + 1;
+    for (const Modul& modul : postep.getKurs().getModuly()) {
+        if (modul.getKolejnosc() == numer) {
+            cout << "\nModul " << numer << ": " << modul.getTytul() << '\n';
+            const vector<Lekcja>& lekcje = modul.getLekcje();
+
+            for (int i = 0; i < static_cast<int>(lekcje.size()); ++i) {
+                cout << "Lekcja " << i + 1 << "/" << lekcje.size() << ": "
+                     << lekcje[i].getTytul() << '\n';
+                if (!czekajNaEnter()) {
+                    cout << "Przerwano. Modul nie zostal ukonczony.\n";
+                    return;
+                }
+            }
+
+            postep.ukonczModul();
+            cout << "Ukonczono modul " << numer << ". Nowy postep: "
+                 << postep.procentUkonczenia() << "%\n";
+            return;
+        }
+    }
 }
 
 void obsluzKursanta(PlatformaEdukacyjna& platforma, Kursant& kursant) {
@@ -116,7 +162,7 @@ void obsluzKursanta(PlatformaEdukacyjna& platforma, Kursant& kursant) {
              << "1. Pokaz dostepne kursy\n"
              << "2. Zapisz sie na kurs\n"
              << "3. Pokaz postep i dostepne moduly\n"
-             << "4. Ukoncz kolejny modul\n"
+             << "4. Przejdz kolejny modul\n"
              << "5. Wygeneruj certyfikat\n"
              << "0. Powrot\n";
         wybor = wczytajLiczbe("Wybierz opcje: ", 0, 5);
@@ -127,9 +173,13 @@ void obsluzKursanta(PlatformaEdukacyjna& platforma, Kursant& kursant) {
             vector<Kurs> kursy = platforma.pokazKursy();
             wyswietlKursy(platforma);
             if (!kursy.empty()) {
+                cout << "0. Powrot\n";
                 int numer = wczytajLiczbe(
-                    "Wybierz kurs do zapisania: ", 1,
+                    "Wybierz kurs do zapisania: ", 0,
                     static_cast<int>(kursy.size()));
+                if (numer == 0) {
+                    continue;
+                }
                 kursant.zapiszSie(kursy[numer - 1]);
                 cout << "Zapisano na kurs: " << kursy[numer - 1].getTytul()
                      << '\n';
@@ -149,11 +199,7 @@ void obsluzKursanta(PlatformaEdukacyjna& platforma, Kursant& kursant) {
         } else if (wybor == 4) {
             int indeks = wybierzPostep(kursant);
             if (indeks >= 0) {
-                Postep& postep = kursant.getPostep(indeks);
-                postep.ukonczModul();
-                cout << "Ukonczono modul. Ukonczone moduly: "
-                 << postep.getUkonczoneModuly() << ". Nowy postep: "
-                 << postep.procentUkonczenia() << "%\n";
+                przejdzKolejnyModul(kursant.getPostep(indeks));
             }
         } else if (wybor == 5) {
             int indeks = wybierzPostep(kursant);
@@ -165,60 +211,175 @@ void obsluzKursanta(PlatformaEdukacyjna& platforma, Kursant& kursant) {
     } while (wybor != 0);
 }
 
+void obsluzWykladowce(PlatformaEdukacyjna& platforma,
+                      const Wykladowca& wykladowca) {
+    int wybor;
+
+    do {
+        cout << "\n--- Menu wykladowcy ---\n"
+             << "1. Utworz kurs\n"
+             << "2. Pokaz wszystkie kursy\n"
+             << "0. Powrot\n";
+        wybor = wczytajLiczbe("Wybierz opcje: ", 0, 2);
+
+        if (wybor == 1) {
+            utworzKurs(platforma, wykladowca);
+        } else if (wybor == 2) {
+            wyswietlKursy(platforma);
+        }
+    } while (wybor != 0);
+}
+
 void dodajKursyBazowe(PlatformaEdukacyjna& platforma,
                       const Wykladowca& wykladowca) {
     Kurs podstawyCpp = wykladowca.utworzKurs("C++ od podstaw");
     Modul cppWprowadzenie("Wprowadzenie do C++", 1);
-    cppWprowadzenie.dodajLekcje(Lekcja("Instalacja kompilatora"));
-    cppWprowadzenie.dodajLekcje(Lekcja("Pierwszy program"));
+    cppWprowadzenie.dodajLekcje(Lekcja(
+        "Aby pisac programy w C++, potrzebujesz kompilatora, czyli "
+        "programu, ktory zamienia kod zrodlowy na plik wykonywalny. "
+        "W tej lekcji instalujesz kompilator g++ oraz srodowisko CLion "
+        "i sprawdzasz poleceniem g++ --version, czy wszystko dziala."));
+    cppWprowadzenie.dodajLekcje(Lekcja(
+        "Piszesz klasyczny program Hello World. Poznajesz funkcje main, "
+        "od ktorej zaczyna sie kazdy program, biblioteke iostream oraz "
+        "obiekt cout, ktory wypisuje tekst na ekran. Na koniec "
+        "kompilujesz i uruchamiasz swoj pierwszy program."));
     podstawyCpp.dodajModul(cppWprowadzenie);
 
     Modul cppObiekty("Klasy i obiekty", 2);
-    cppObiekty.dodajLekcje(Lekcja("Tworzenie klasy"));
-    cppObiekty.dodajLekcje(Lekcja("Konstruktory"));
+    cppObiekty.dodajLekcje(Lekcja(
+        "Klasa to przepis na obiekty: opisuje, jakie dane maja obiekty "
+        "(pola) i co potrafia robic (metody). Tworzysz klase z polami "
+        "prywatnymi i metodami publicznymi oraz uczysz sie, czym rozni "
+        "sie klasa od obiektu."));
+    cppObiekty.dodajLekcje(Lekcja(
+        "Konstruktor to specjalna metoda wywolywana automatycznie przy "
+        "tworzeniu obiektu. Poznajesz liste inicjalizacyjna, "
+        "konstruktory z parametrami i bez nich oraz destruktor, ktory "
+        "sprzata, gdy obiekt przestaje istniec."));
     podstawyCpp.dodajModul(cppObiekty);
     platforma.dodajKurs(podstawyCpp);
 
     Kurs podstawyPython = wykladowca.utworzKurs("Python dla poczatkujacych");
     Modul pythonWprowadzenie("Podstawy jezyka", 1);
-    pythonWprowadzenie.dodajLekcje(Lekcja("Zmienne i typy danych"));
-    pythonWprowadzenie.dodajLekcje(Lekcja("Instrukcje warunkowe"));
+    pythonWprowadzenie.dodajLekcje(Lekcja(
+        "W Pythonie nie trzeba deklarowac typu zmiennej, bo jezyk sam "
+        "go rozpoznaje. Poznajesz podstawowe typy: liczby calkowite "
+        "(int), zmiennoprzecinkowe (float), napisy (str) i wartosci "
+        "logiczne (bool) oraz funkcje type()."));
+    pythonWprowadzenie.dodajLekcje(Lekcja(
+        "Instrukcje if, elif i else pozwalaja programowi podejmowac "
+        "decyzje. Uczysz sie porownywac wartosci, laczyc warunki "
+        "slowami and i or oraz pamietac o wcieciach, ktore w Pythonie "
+        "wyznaczaja bloki kodu."));
     podstawyPython.dodajModul(pythonWprowadzenie);
 
     Modul pythonKolekcje("Kolekcje danych", 2);
-    pythonKolekcje.dodajLekcje(Lekcja("Listy"));
-    pythonKolekcje.dodajLekcje(Lekcja("Slowniki"));
+    pythonKolekcje.dodajLekcje(Lekcja(
+        "Lista przechowuje wiele wartosci w jednej zmiennej, w "
+        "okreslonej kolejnosci. Poznajesz dodawanie elementow metoda "
+        "append(), odczyt po indeksie liczonym od 0 oraz przechodzenie "
+        "po liscie petla for."));
+    pythonKolekcje.dodajLekcje(Lekcja(
+        "Slownik przechowuje pary klucz-wartosc, na przyklad imie i "
+        "numer telefonu. Uczysz sie dodawac i odczytywac elementy po "
+        "kluczu, sprawdzac, czy klucz istnieje, oraz przechodzic po "
+        "wszystkich parach petla for."));
     podstawyPython.dodajModul(pythonKolekcje);
     platforma.dodajKurs(podstawyPython);
 }
 
+int wybierzWykladowce(const vector<Wykladowca>& wykladowcy) {
+    cout << "\nWykladowcy:\n";
+    for (int i = 0; i < static_cast<int>(wykladowcy.size()); ++i) {
+        cout << i + 1 << ". " << wykladowcy[i].getImie() << " "
+             << wykladowcy[i].getNazwisko() << '\n';
+    }
+    cout << "0. Powrot\n";
+
+    return wczytajLiczbe("Wybierz wykladowce: ", 0,
+                         static_cast<int>(wykladowcy.size())) - 1;
+}
+
+int wybierzKursanta(const vector<Kursant>& kursanci) {
+    cout << "\nKursanci:\n";
+    for (int i = 0; i < static_cast<int>(kursanci.size()); ++i) {
+        cout << i + 1 << ". " << kursanci[i].getImie() << " "
+             << kursanci[i].getNazwisko() << '\n';
+    }
+    cout << "0. Powrot\n";
+
+    return wczytajLiczbe("Wybierz kursanta: ", 0,
+                         static_cast<int>(kursanci.size())) - 1;
+}
+
+void dodajWykladowce(vector<Wykladowca>& wykladowcy, int& nastepneId) {
+    string imie = wczytajTekst("Podaj imie (0 - powrot): ");
+    if (imie == "0") {
+        return;
+    }
+    string nazwisko = wczytajTekst("Podaj nazwisko: ");
+
+    wykladowcy.push_back(Wykladowca(imie, nazwisko, nastepneId));
+    ++nastepneId;
+    cout << "Dodano wykladowce: " << imie << " " << nazwisko << '\n';
+}
+
+void dodajKursanta(vector<Kursant>& kursanci, int& nastepneId) {
+    string imie = wczytajTekst("Podaj imie (0 - powrot): ");
+    if (imie == "0") {
+        return;
+    }
+    string nazwisko = wczytajTekst("Podaj nazwisko: ");
+
+    kursanci.push_back(Kursant(imie, nazwisko, nastepneId));
+    ++nastepneId;
+    cout << "Dodano kursanta: " << imie << " " << nazwisko << '\n';
+}
+
 int main() {
     PlatformaEdukacyjna platforma;
-    Wykladowca wykladowca("Anna", "Nowak", 1);
-    Kursant kursant("Jan", "Kowalski", 2);
+    vector<Wykladowca> wykladowcy;
+    vector<Kursant> kursanci;
+    int nastepneId = 3;
     int wybor;
 
-    dodajKursyBazowe(platforma, wykladowca);
+    wykladowcy.push_back(Wykladowca("Anna", "Nowak", 1));
+    kursanci.push_back(Kursant("Jan", "Kowalski", 2));
+    dodajKursyBazowe(platforma, wykladowcy[0]);
 
     cout << "Platforma Kursow Online\n";
-    cout << "Zalogowano jako: " << wykladowca.getImie() << " "
-         << wykladowca.getNazwisko() << " i " << kursant.getImie() << " "
-         << kursant.getNazwisko() << "\n";
 
     do {
         cout << "\n--- Menu glowne ---\n"
              << "1. Panel wykladowcy\n"
              << "2. Panel kursanta\n"
              << "3. Pokaz wszystkie kursy\n"
+             << "4. Dodaj wykladowce\n"
+             << "5. Dodaj kursanta\n"
              << "0. Zakoncz program\n";
-        wybor = wczytajLiczbe("Wybierz opcje: ", 0, 3);
+        wybor = wczytajLiczbe("Wybierz opcje: ", 0, 5);
 
         if (wybor == 1) {
-            utworzKurs(platforma, wykladowca);
+            int i = wybierzWykladowce(wykladowcy);
+            if (i >= 0) {
+                cout << "Zalogowano jako: " << wykladowcy[i].getImie() << " "
+                     << wykladowcy[i].getNazwisko() << '\n';
+                obsluzWykladowce(platforma, wykladowcy[i]);
+            }
         } else if (wybor == 2) {
-            obsluzKursanta(platforma, kursant);
+            int i = wybierzKursanta(kursanci);
+            if (i >= 0) {
+                cout << "Zalogowano jako: " << kursanci[i].getImie() << " "
+                     << kursanci[i].getNazwisko() << '\n';
+                obsluzKursanta(platforma, kursanci[i]);
+            }
         } else if (wybor == 3) {
             wyswietlKursy(platforma);
+        } else if (wybor == 4) {
+            dodajWykladowce(wykladowcy, nastepneId);
+        } else if (wybor == 5) {
+            dodajKursanta(kursanci, nastepneId);
         }
     } while (wybor != 0);
 
