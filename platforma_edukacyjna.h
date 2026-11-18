@@ -1,12 +1,10 @@
 #pragma once
 
-#include <memory>
 #include <vector>
 
 #include "kurs.h"
 #include "postep.h"
 #include "Uzytkownicy/kursant.h"
-#include "Uzytkownicy/uzytkownik.h"
 
 using namespace std;
 
@@ -18,5 +16,4 @@ public:
 
 private:
     vector<Kurs> kursy_;
-    vector<unique_ptr<Uzytkownik>> uzytkownicy_;
 };

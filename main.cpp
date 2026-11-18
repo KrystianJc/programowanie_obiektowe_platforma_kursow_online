@@ -337,6 +337,12 @@ void dodajKursanta(vector<Kursant>& kursanci, int& nastepneId) {
     cout << "Dodano kursanta: " << imie << " " << nazwisko << '\n';
 }
 
+void wyswietlZalogowanego(const Uzytkownik& u) {
+    cout << "Zalogowano jako: " << u.getImie() << " " << u.getNazwisko()
+         << " (" << u.getRola() << ")\n";
+}
+
+
 int main() {
     PlatformaEdukacyjna platforma;
     vector<Wykladowca> wykladowcy;
@@ -363,15 +369,13 @@ int main() {
         if (wybor == 1) {
             int i = wybierzWykladowce(wykladowcy);
             if (i >= 0) {
-                cout << "Zalogowano jako: " << wykladowcy[i].getImie() << " "
-                     << wykladowcy[i].getNazwisko() << '\n';
+                wyswietlZalogowanego(wykladowcy[i]);
                 obsluzWykladowce(platforma, wykladowcy[i]);
             }
         } else if (wybor == 2) {
             int i = wybierzKursanta(kursanci);
             if (i >= 0) {
-                cout << "Zalogowano jako: " << kursanci[i].getImie() << " "
-                     << kursanci[i].getNazwisko() << '\n';
+                wyswietlZalogowanego(kursanci[i]);
                 obsluzKursanta(platforma, kursanci[i]);
             }
         } else if (wybor == 3) {
